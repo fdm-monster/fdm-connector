@@ -28,8 +28,8 @@ Please configure the plugin completely for one or more printers before checking 
 
 ### Configuration - auto-registration
 Configuring the auto-registration properly can massively improve the steps you need to undertake to setup your farm.
-- REQUIRED `3dh_host` the host to reach 3D Hub with (IP, localhost, domain name, etc)
-- REQUIRED `3dh_port` the port to approach the 3D Hub server (number)
+- REQUIRED `hub_host` the host to reach 3D Hub with (IP, localhost, domain name, etc)
+- REQUIRED `hub_port` the port to approach the 3D Hub server (number)
 - REQUIRED `oidc_client_id` the client id to authenticate with the 3D Hub server using OpenID Connect (string)
 - REQUIRED `oidc_client_secret` the client secret key to authenticate with the 3D Hub server using OpenID Connect (string)
 - OPTIONAL `port_override` the announced port for how 3D Hub can reach OctoPrint later (default is taken from `server:port`, but this is not always correct in case of Docker or a proxy.)
