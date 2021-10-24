@@ -1,0 +1,4 @@
+include README.md
+recursive-include hub_connector/templates *
+recursive-include hub_connector/translations *
+recursive-include hub_connector/static *
