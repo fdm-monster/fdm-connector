@@ -25,9 +25,9 @@ def is_docker():
     )
 
 
-hub_announce_route = 'octoprint/announce'
-hub_access_token_route = 'oidc/token'
-hub_version_route = 'app/version'
+hub_announce_route = 'api/plugins/octoprint/announce'
+hub_access_token_route = 'api/plugins/oidc/token'
+hub_version_route = 'api/version'
 requested_scopes = 'openid'
 
 
