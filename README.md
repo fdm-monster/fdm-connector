@@ -6,7 +6,7 @@ Current feature(s):
 - Auto-registration - send your OctoPrint connection parameters to 3D Hub safely, to make setting up printers a breeze.
 
 Future features:
-- Filament Pedometer - send filament usage data to 3D Hub, making the filament manager plugin and its PostGres database unnecessary.
+- Filament Pedometer - send filament usage data to 3D Hub, cooperating with the plugin SpoolManager without external database (Filament Manager is not our aim)
 - Http Tunnel - connect to 3D Hub, to make connection to printers a breeze especially over docker, VPN, DMZ, VLAN, the cloud or other complex network setups.
 - Single-sign-On - client-to-machine (C2M) and machine-to-machine (M2M) authentication removing the need for more than 1 set of credentials across the farm.
 
