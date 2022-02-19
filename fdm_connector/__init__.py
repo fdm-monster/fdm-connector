@@ -14,7 +14,7 @@ import requests
 from flask import request
 from octoprint.util import RepeatedTimer
 
-from hub_connector.constants import Errors, State, Config, Keys
+from fdm_connector.constants import Errors, State, Config, Keys
 
 
 def is_docker():
@@ -25,13 +25,13 @@ def is_docker():
     )
 
 
-hub_announce_route = 'api/plugins/octoprint/announce'
-hub_access_token_route = 'api/plugins/oidc/token'
-hub_version_route = 'api/version'
+fdm_announce_route = 'api/plugins/octoprint/announce'
+fdm_access_token_route = 'api/plugins/oidc/token'
+fdm_version_route = 'api/version'
 requested_scopes = 'openid'
 
 
-class HubConnectorPlugin(
+class FdmConnectorPlugin(
     octoprint.plugin.StartupPlugin,
     octoprint.plugin.TemplatePlugin,
     octoprint.plugin.ShutdownPlugin,
@@ -47,10 +47,10 @@ class HubConnectorPlugin(
         self._state = State.BOOT
 
     def on_after_startup(self):
-        if self._settings.get(["hub_host"]) is None:
-            self._settings.set(["hub_host"], Config.default_hub_host)
-        if self._settings.get(["hub_port"]) is None:
-            self._settings.set(["hub_port"], Config.default_hub_port)
+        if self._settings.get(["fdm_host"]) is None:
+            self._settings.set(["fdm_host"], Config.default_fdm_host)
+        if self._settings.get(["fdm_port"]) is None:
+            self._settings.set(["fdm_port"], Config.default_fdm_port)
         self._get_device_uuid()
         self._start_periodic_check()
 
@@ -60,9 +60,9 @@ class HubConnectorPlugin(
         return self._excluded_persistence_datapath
 
     def get_template_vars(self):
-        hub_host = self._settings.get(["hub_host"])
-        hub_port = self._settings.get(["hub_port"])
-        base_url = f"{hub_host}:{hub_port}"
+        fdm_host = self._settings.get(["fdm_host"])
+        fdm_port = self._settings.get(["fdm_port"])
+        base_url = f"{fdm_host}:{fdm_port}"
         favicon = f"{base_url}/favicon.ico"
         return dict(url=base_url, of_favicon=favicon)
 
@@ -75,8 +75,8 @@ class HubConnectorPlugin(
     # TODO make http://https:// slash robust
     def get_settings_defaults(self):
         return {
-            "hub_host": None,  # Without adjustment this config value is OFTEN useless
-            "hub_port": None,  # Without adjustment this config value is OFTEN useless
+            "fdm_host": None,  # Without adjustment this config value is OFTEN useless
+            "fdm_port": None,  # Without adjustment this config value is OFTEN useless
             "port_override": None,  # Without adjustment this config value is SOMETIMES useless
             "device_uuid": None,  # Auto-generated and unique
             "oidc_client_id": None,  # Without adjustment this config value is ALWAYS useless
@@ -91,9 +91,9 @@ class HubConnectorPlugin(
         # Define your plugin's asset files to automatically include in the
         # core UI here.
         return dict(
-            js=["js/hub_connector.js"],
-            css=["css/hub_connector.css"],
-            less=["less/hub_connector.less"]
+            js=["js/fdm_connector.js"],
+            css=["css/fdm_connector.css"],
+            less=["less/fdm_connector.less"]
         )
 
     def initialize(self):
@@ -109,7 +109,7 @@ class HubConnectorPlugin(
                     self._persisted_data = persistence_json
             except json.decoder.JSONDecodeError as e:
                 self._logger.warning(
-                    "3D Hub persisted device Id file was of invalid format.")
+                    "FDM Connector persisted device Id file was of invalid format.")
                 self._write_new_device_uuid(filepath)
         else:
             self._write_new_device_uuid(filepath)
@@ -123,13 +123,13 @@ class HubConnectorPlugin(
         if "scope" in at_data.keys():
             self._persisted_data["scope"] = at_data["scope"]
         self._write_persisted_data(filepath)
-        self._logger.info("3D Hub persisted data file was updated (access_token)")
+        self._logger.info("FDM Connector persisted data file was updated (access_token)")
 
     def _write_new_device_uuid(self, filepath):
         persistence_uuid = str(uuid.uuid4())
         self._persisted_data[Keys.persistence_uuid_key] = persistence_uuid
         self._write_persisted_data(filepath)
-        self._logger.info("3D Hub persisted data file was updated (device_uuid).")
+        self._logger.info("FDM Connector persisted data file was updated (device_uuid).")
 
     def _write_persisted_data(self, filepath):
         with io.open(filepath, "w", encoding="utf-8") as f:
@@ -148,18 +148,18 @@ class HubConnectorPlugin(
         # Plugin here. See https://docs.octoprint.org/en/master/bundledplugins/softwareupdate.html
         # for details.
         return dict(
-            hub_connector=dict(
-                displayName="3D-Hub Connector Plugin",
+            fdm_connector=dict(
+                displayName="FDM Connector Plugin",
                 displayVersion=self._plugin_version,
 
                 # version check: github repository
-                type="github_release",
-                user="3d-hub",
-                repo="3d-hub-connector",
+                type="gitfdm_release",
+                user="fdm-monster",
+                repo="fdm-connector",
                 current=self._plugin_version,
 
                 # update method: pip
-                pip="https://github.com/3d-hub/3d-hub-connector/archive/{target_version}.zip"
+                pip="https://github.com/fdm-monster/fdm-connector/archive/{target_version}.zip"
             )
         )
 
@@ -168,18 +168,18 @@ class HubConnectorPlugin(
             ping_interval = self._settings.get_int(["ping"])
             if ping_interval:
                 self._ping_worker = RepeatedTimer(
-                    ping_interval, self._check_3dhub, run_first=True
+                    ping_interval, self._check_fdmmonster, run_first=True
                 )
                 self._ping_worker.start()
             else:
                 return self._logger.error(Errors.ping_setting_unset)
 
-    def _check_3dhub(self):
-        hub_host = self._settings.get(["hub_host"])
-        hub_port = self._settings.get(["hub_port"])
+    def _check_fdmmonster(self):
+        fdm_host = self._settings.get(["fdm_host"])
+        fdm_port = self._settings.get(["fdm_port"])
 
-        if hub_host is not None and hub_port is not None:
-            base_url = f"{hub_host}:{hub_port}"
+        if fdm_host is not None and fdm_port is not None:
+            base_url = f"{fdm_host}:{fdm_port}"
 
             # OIDC client_credentials flow result
             access_token = self._persisted_data.get("access_token", None)
@@ -228,8 +228,8 @@ class HubConnectorPlugin(
         at_data = None
         try:
             data = {'grant_type': 'client_credentials', 'scope': requested_scopes}
-            self._logger.info("Calling 3D Hub at URL: " + base_url)
-            url = urljoin(base_url, hub_access_token_route)
+            self._logger.info("Calling FDM Connector at URL: " + base_url)
+            url = urljoin(base_url, fdm_access_token_route)
             response = requests.post(url, data=data,
                                      verify=False, allow_redirects=False, auth=(oidc_client_id, oidc_client_secret))
             self._logger.info(response.text)
@@ -237,18 +237,18 @@ class HubConnectorPlugin(
             at_data = json.loads(response.text)
         except requests.exceptions.ConnectionError:
             self._state = State.RETRY  # TODO apply this with a backoff scheme
-            self._logger.error("ConnectionError: error sending access_token request to 3D Hub")
+            self._logger.error("ConnectionError: error sending access_token request to FDM Monster")
         except Exception as e:
             self._state = State.CRASHED
             self._logger.error(
-                "Generic Exception: error requesting access_token request to 3D Hub. Exception: " + str(e))
+                "Generic Exception: error requesting access_token request to FDM Monster. Exception: " + str(e))
 
         if at_data is not None:
             if "access_token" not in at_data.keys():
                 raise Exception(
-                    "Response error: 'access_token' not received. Check your 3D Hub server logs. Aborting")
+                    "Response error: 'access_token' not received. Check your FDM Monster server logs. Aborting")
             if "expires_in" not in at_data.keys() is None:
-                raise Exception("Response error: 'expires_in' not received. Check your 3D Hub server logs. Aborting")
+                raise Exception("Response error: 'expires_in' not received. Check your FDM Monster server logs. Aborting")
 
             # Saves to file and to this plugin instance self._persistence_data accordingly
             self._write_new_access_token(self.get_excluded_persistence_datapath(), at_data)
@@ -273,7 +273,7 @@ class HubConnectorPlugin(
         # Announced data
         octoprint_port = self._settings.get(["port_override"])
         octoprint_host = self._settings.global_get(["server", "host"])
-        # TODO maybe let 3D Hub decide instead of swapping ourselves?
+        # TODO maybe let FDM Monster decide instead of swapping ourselves?
         if octoprint_port is None:
             # Risk of failure when behind proxy (docker, vm, vpn, rev-proxy)
             octoprint_port = self._settings.global_get(["server", "port"])
@@ -293,15 +293,15 @@ class HubConnectorPlugin(
             }
 
             headers = {'Authorization': 'Bearer ' + access_token}
-            url = urljoin(base_url, hub_announce_route)
+            url = urljoin(base_url, fdm_announce_route)
             response = requests.post(url, headers=headers, json=check_data)
 
             self._state = State.SLEEP
-            self._logger.info(f"Done announcing to 3D Hub server ({response.status_code})")
+            self._logger.info(f"Done announcing to FDM Monster server ({response.status_code})")
             self._logger.info(response.text)
         except requests.exceptions.ConnectionError:
             self._state = State.CRASHED
-            self._logger.error("ConnectionError: error sending announcement to 3D Hub")
+            self._logger.error("ConnectionError: error sending announcement to FDM Monster")
 
     def _call_validator_abort(self, key):
         flask.abort(400, description=f"Expected '{key}' parameter")
@@ -310,8 +310,8 @@ class HubConnectorPlugin(
     def additional_excludes_hook(excludes, *args, **kwargs):
         return [Config.persisted_data_file]
 
-    @octoprint.plugin.BlueprintPlugin.route("/test_3dhub_connection", methods=["POST"])
-    def test_3dhub_connection(self):
+    @octoprint.plugin.BlueprintPlugin.route("/test_fdmmonster_connection", methods=["POST"])
+    def test_fdmmonster_connection(self):
         input = json.loads(request.data)
         keys = ["url"]
         for key in keys:
@@ -319,18 +319,18 @@ class HubConnectorPlugin(
                 return self._call_validator_abort(key)
 
         proposed_url = input["url"]
-        self._logger.info("Testing 3D Hub URL " + proposed_url)
+        self._logger.info("Testing FDM Monster URL " + proposed_url)
 
-        url = urljoin(proposed_url, hub_version_route)
+        url = urljoin(proposed_url, fdm_version_route)
         response = requests.get(url)
         version_data = json.loads(response.text)
 
-        self._logger.info("Version response from 3D Hub " + version_data["version"])
+        self._logger.info("Version response from FDM Monster " + version_data["version"])
 
         return version_data
 
-    @octoprint.plugin.BlueprintPlugin.route("/test_3dhub_openid", methods=["POST"])
-    def test_3dhub_openid(self):
+    @octoprint.plugin.BlueprintPlugin.route("/test_fdmmonster_openid", methods=["POST"])
+    def test_fdmmonster_openid(self):
         input = json.loads(request.data)
         keys = ["url", "client_id", "client_secret"]
         for key in keys:
@@ -342,22 +342,22 @@ class HubConnectorPlugin(
         oidc_client_secret = input["client_secret"]
         self._query_access_token(proposed_url, oidc_client_id, oidc_client_secret)
 
-        self._logger.info("Queried access_token from 3D Hub")
+        self._logger.info("Queried access_token from FDM Monster")
 
         return {
             "state": self._state,
         }
 
 
-__plugin_name__ = "3D Hub Connector"
+__plugin_name__ = "FDM Connector"
 __plugin_version__ = "0.1.0"
-__plugin_description__ = "The 3D Hub plugin for OctoPrint"
+__plugin_description__ = "The FDM Monster plugin for OctoPrint"
 __plugin_pythoncompat__ = ">=3,<4"
 
 
 def __plugin_load__():
     global __plugin_implementation__
-    __plugin_implementation__ = HubConnectorPlugin()
+    __plugin_implementation__ = FdmConnectorPlugin()
 
     global __plugin_hooks__
     __plugin_hooks__ = {

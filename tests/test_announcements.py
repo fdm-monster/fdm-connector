@@ -4,8 +4,8 @@ import unittest
 import unittest.mock as mock
 import pytest
 
-from hub_connector import HubConnectorPlugin
-from hub_connector.constants import Errors, State
+from fdm_connector import FdmConnectorPlugin
+from fdm_connector.constants import Errors, State
 from tests.utils import mock_settings_get, mock_settings_global_get, mock_settings_custom, create_fake_at, \
     mocked_host_intercepted
 
@@ -16,7 +16,7 @@ class TestPluginAnnouncing(unittest.TestCase):
         cls.settings = mock.MagicMock()  # Replace or refine with set/get
         cls.logger = mock.MagicMock()
 
-        cls.plugin = HubConnectorPlugin()
+        cls.plugin = FdmConnectorPlugin()
         cls.plugin._settings = cls.settings
         cls.plugin._settings.get = mock_settings_get
         cls.plugin._settings.get = mock_settings_global_get
@@ -79,48 +79,48 @@ class TestPluginAnnouncing(unittest.TestCase):
         # assert e.value.args[0] == Errors.base_url_not_provided
         self.assert_state(State.SLEEP)
 
-    def test_check_hub(self):
+    def test_check_fdm(self):
         with pytest.raises(Exception) as e:
-            self.plugin._check_3dhub()
+            self.plugin._check_fdmmonster()
 
         assert e.value.args[0] == Errors.config_openid_missing
         self.assert_state(State.CRASHED)
 
-    def test_check_3dhub_unreachable_settings(self):
+    def test_check_fdmmonster_unreachable_settings(self):
         self.plugin._settings.get = mock_settings_custom
         self.assert_state(State.BOOT)
 
-        self.plugin._check_3dhub()
+        self.plugin._check_fdmmonster()
 
         # TODO We are crashed with a connection error being caught. Save the reason
         self.assert_state(State.CRASHED)
 
     @mock.patch('requests.post', side_effect=mocked_requests_post)
-    def test_check_3dhub_reachable_settings(self, mock_request):
+    def test_check_fdmmonster_reachable_settings(self, mock_request):
         self.plugin._settings.get = mock_settings_custom
         self.assert_state(State.BOOT)
 
-        self.plugin._check_3dhub()
+        self.plugin._check_fdmmonster()
         self.assert_state(State.SLEEP)
 
     @mock.patch('requests.post', side_effect=mocked_requests_post)
-    def test_check_3dhub_reachable_settings_expired(self, mock_request):
+    def test_check_fdmmonster_reachable_settings_expired(self, mock_request):
         self.plugin._settings.get = mock_settings_custom
         self.plugin._persisted_data["requested_at"] = datetime.datetime.utcnow().timestamp()
         self.plugin._persisted_data["expires"] = -100
         self.assert_state(State.BOOT)
 
-        self.plugin._check_3dhub()
+        self.plugin._check_fdmmonster()
 
         self.assert_state(State.SLEEP)
 
     @mock.patch('requests.post', side_effect=mocked_requests_post)
-    def test_check_3dhub_reachable_settings_unexpired(self, mock_request):
+    def test_check_fdmmonster_reachable_settings_unexpired(self, mock_request):
         self.plugin._settings.get = mock_settings_custom
         self.plugin._persisted_data["requested_at"] = datetime.datetime.utcnow().timestamp()
         self.plugin._persisted_data["expires"] = 10000000
         self.plugin._persisted_data["access_token"] = create_fake_at()
 
         self.assert_state(State.BOOT)
-        self.plugin._check_3dhub() # We skip querying the access_token
+        self.plugin._check_fdmmonster() # We skip querying the access_token
         self.assert_state(State.SLEEP)

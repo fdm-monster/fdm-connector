@@ -2,14 +2,14 @@ import unittest
 import unittest.mock as mock
 from datetime import datetime
 
-from hub_connector import HubConnectorPlugin, __plugin_version__
-from hub_connector.constants import Config, Keys, Errors
+from fdm_connector import FdmConnectorPlugin, __plugin_version__
+from fdm_connector.constants import Config, Keys, Errors
 from tests.utils import mock_settings_get, mock_settings_get_int
 
 
 class TestPluginConfiguration(unittest.TestCase):
     @classmethod
-    @mock.patch('hub_connector.RepeatedTimer')
+    @mock.patch('fdm_connector.RepeatedTimer')
     def setUp(cls, mock_repeated_timer):
         cls.settings = mock.MagicMock()  # Replace or refine with set/get
         cls.settings.get = mock_settings_get
@@ -19,7 +19,7 @@ class TestPluginConfiguration(unittest.TestCase):
         cls.mock_repeated_timer = mock_repeated_timer
         cls.mock_repeated_timer.start = lambda *args: None
 
-        cls.plugin = HubConnectorPlugin()
+        cls.plugin = FdmConnectorPlugin()
         cls.plugin._settings = cls.settings
         cls.plugin._write_persisted_data = lambda *args: None
         cls.plugin._logger = cls.logger
@@ -110,8 +110,8 @@ class TestPluginConfiguration(unittest.TestCase):
 
     def test_settings_default(self):
         defaults = self.plugin.get_settings_defaults()
-        assert defaults["hub_host"] is None
-        assert defaults["hub_port"] is None
+        assert defaults["fdm_host"] is None
+        assert defaults["fdm_port"] is None
         assert defaults["oidc_client_id"] is None
         assert defaults["oidc_client_secret"] is None
         assert defaults["ping"] == 120
@@ -133,7 +133,7 @@ class TestPluginConfiguration(unittest.TestCase):
         assert "css" in assets_dict
         assert "less" in assets_dict
 
-        assert assets_dict["js"][0] == "js/hub_connector.js"
+        assert assets_dict["js"][0] == "js/fdm_connector.js"
 
     def test_get_settings_version(self):
         assert self.plugin.get_settings_version() == 1
@@ -142,7 +142,7 @@ class TestPluginConfiguration(unittest.TestCase):
         self.plugin._write_new_device_uuid("test")
         assert len(self.plugin._persisted_data[Keys.persistence_uuid_key]) == Config.uuid_length
 
-    @mock.patch('hub_connector.HubConnectorPlugin._write_persisted_data')
+    @mock.patch('fdm_connector.FdmConnectorPlugin._write_persisted_data')
     def test_write_new_access_token(self, mocked):
         new_data = dict(
             access_token="asd1",
@@ -164,12 +164,12 @@ class TestPluginConfiguration(unittest.TestCase):
         self.plugin._plugin_version = __plugin_version__
         update_state = self.plugin.get_update_information()
 
-        assert update_state["hub_connector"]["displayVersion"] == __plugin_version__
-        assert update_state["hub_connector"]["type"] == "github_release"
-        assert update_state["hub_connector"]["user"] == "3d-hub"
-        assert update_state["hub_connector"]["repo"] == "3d-hub-connector"
-        assert update_state["hub_connector"]["current"] == __plugin_version__
-        assert "3d-hub/3d-hub-connector" in update_state["hub_connector"]["pip"]
+        assert update_state["fdm_connector"]["displayVersion"] == __plugin_version__
+        assert update_state["fdm_connector"]["type"] == "github_release"
+        assert update_state["fdm_connector"]["user"] == "fdm-monster"
+        assert update_state["fdm_connector"]["repo"] == "fdm-connector"
+        assert update_state["fdm_connector"]["current"] == __plugin_version__
+        assert "fdm-monster/fdm-connector" in update_state["fdm_connector"]["pip"]
 
     def test_plugin_version_compared_setup(self):
         """ Make sure the installation version equals the plugin version """

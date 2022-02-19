@@ -1,24 +1,24 @@
 from random import choice
 from string import ascii_uppercase
 
-from hub_connector import Config
+from fdm_connector import Config
 
-mocked_host_intercepted = "https://hub123asdasdasdasd.com"
+mocked_host_intercepted = "https://fdm123asdasdasdasd.com"
 
 def mock_settings_get(accessor):
-    if accessor[0] == "hub_host":
-        return Config.default_hub_host
-    if accessor[0] == "hub_port":
-        return Config.default_hub_port
+    if accessor[0] == "fdm_host":
+        return Config.default_fdm_host
+    if accessor[0] == "fdm_port":
+        return Config.default_fdm_port
     if accessor[0] == "ping":
         return Config.default_ping_secs
     return None
 
 
 def mock_settings_custom(accessor):
-    if accessor[0] == "hub_host":
+    if accessor[0] == "fdm_host":
         return mocked_host_intercepted
-    if accessor[0] == "hub_port":
+    if accessor[0] == "fdm_port":
         return 443
     if accessor[0] == "ping":
         return 300
@@ -36,8 +36,8 @@ def mock_settings_global_get(accessor):
 
 
 def mock_settings_get_int(accessor):
-    if accessor[0] == "hub_port":
-        return Config.default_hub_port
+    if accessor[0] == "fdm_port":
+        return Config.default_fdm_port
     if accessor[0] == "ping":
         return Config.default_ping_secs
     return None

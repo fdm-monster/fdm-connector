@@ -5,7 +5,7 @@ import unittest.mock as mock
 import pytest
 from werkzeug.exceptions import BadRequest
 
-from hub_connector import HubConnectorPlugin, State
+from fdm_connector import FdmConnectorPlugin, State
 
 
 class TestPluginConnection(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestPluginConnection(unittest.TestCase):
         cls.settings = mock.MagicMock()  # Replace or refine with set/get
         cls.logger = mock.MagicMock()
 
-        cls.plugin = HubConnectorPlugin()
+        cls.plugin = FdmConnectorPlugin()
         cls.plugin._settings = cls.settings
         cls.plugin._logger = cls.logger
         cls.plugin._logger.info = print
@@ -40,61 +40,61 @@ class TestPluginConnection(unittest.TestCase):
         return MockResponse({"version": "test-version"}, 200, json.dumps({"version": "test-version"}))
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_hub_connection_test(self, mocked_requests_get):
-        """Call the 3D Hub connection test properly"""
+    def test_fdm_connection_test(self, mocked_requests_get):
+        """Call the FDM Monster connection test properly"""
 
         m = mock.MagicMock()
         m.data = json.dumps({"url": "http://127.0.0.1"})
 
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             # somefile.method_called_from_route()
-            response = self.plugin.test_3dhub_connection()
+            response = self.plugin.test_fdmmonster_connection()
             assert response["version"] == "test-version"
 
     def _assert_bad_request_parameter(self, exception_info, param):
         assert str(exception_info.value) == f"400 Bad Request: Expected '{param}' parameter"
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_hub_connection_test_validation(self, mocked_requests_get):
-        """Call the 3D Hub connection test with faulty input"""
+    def test_fdm_connection_test_validation(self, mocked_requests_get):
+        """Call the FDM Monster connection test with faulty input"""
 
         m = mock.MagicMock()
         m.data = json.dumps({})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             with pytest.raises(BadRequest) as e:
-                self.plugin.test_3dhub_connection()
+                self.plugin.test_fdmmonster_connection()
             self._assert_bad_request_parameter(e, "url")
 
     @mock.patch('requests.post', side_effect=mocked_requests_get)
-    def test_hub_openid_validation(self, mocked_requests_get):
-        """Call the 3D Hub OpenID connection test with faulty input"""
+    def test_fdm_openid_validation(self, mocked_requests_get):
+        """Call the FDM Monster OpenID connection test with faulty input"""
 
         m = mock.MagicMock()
         m.data = json.dumps({})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             with pytest.raises(BadRequest) as e:
-                self.plugin.test_3dhub_openid()
+                self.plugin.test_fdmmonster_openid()
             self._assert_bad_request_parameter(e, "url")
 
         m = mock.MagicMock()
         m.data = json.dumps({"url": "http://127.0.0.1"})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             with pytest.raises(BadRequest) as e:
-                self.plugin.test_3dhub_openid()
+                self.plugin.test_fdmmonster_openid()
             self._assert_bad_request_parameter(e, "client_id")
 
         m = mock.MagicMock()
         m.data = json.dumps({"url": "http://127.0.0.1", "client_secret": "asd"})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             with pytest.raises(BadRequest) as e:
-                self.plugin.test_3dhub_openid()
+                self.plugin.test_fdmmonster_openid()
             self._assert_bad_request_parameter(e, "client_id")
 
         m = mock.MagicMock()
         m.data = json.dumps({"url": "http://127.0.0.1", "client_id": "asd"})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             with pytest.raises(BadRequest) as e:
-                self.plugin.test_3dhub_openid()
+                self.plugin.test_fdmmonster_openid()
             self._assert_bad_request_parameter(e, "client_secret")
 
     # This method will be used by the mock to replace requests.get
@@ -107,14 +107,14 @@ class TestPluginConnection(unittest.TestCase):
         return MockResponse({}, 404)
 
     @mock.patch('requests.post', side_effect=mocked_openid_response_notfound)
-    def test_hub_openid_bug_response(self, mocked_requests_get):
-        """Call the 3D Hub OpenID connection test with a not found error"""
+    def test_fdm_openid_bug_response(self, mocked_requests_get):
+        """Call the FDM Monster OpenID connection test with a not found error"""
 
         m = mock.MagicMock()
         m.data = json.dumps({"url": "http://127.0.0.1", "client_id": "asd", "client_secret": "ok"})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             self.assert_state(State.BOOT)
-            self.plugin.test_3dhub_openid()
+            self.plugin.test_fdmmonster_openid()
             self.assert_state(State.CRASHED)
 
     # This method will be used by the mock to replace requests.get or requests.post
@@ -138,24 +138,24 @@ class TestPluginConnection(unittest.TestCase):
                             json.dumps({"access_token": "test-token", "expires_in": 600}))
 
     @mock.patch('requests.post', side_effect=mocked_openid_response_maximal)
-    def test_hub_openid_success_maximal(self, mocked_requests_get):
-        """Call the 3D Hub OpenID connection test properly with maximum property set"""
+    def test_fdm_openid_success_maximal(self, mocked_requests_get):
+        """Call the FDM Monster OpenID connection test properly with maximum property set"""
 
         m = mock.MagicMock()
         m.data = json.dumps({"url": "http://127.0.0.1", "client_id": "asd", "client_secret": "ok"})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             self.assert_state(State.BOOT)
-            self.plugin.test_3dhub_openid()
+            self.plugin.test_fdmmonster_openid()
             self.assert_state(State.SUCCESS)
 
     @mock.patch('requests.post', side_effect=mocked_openid_response_minimal)
-    def test_hub_openid_success_minimal(self, mocked_requests_get):
-        """Call the 3D Hub OpenID connection test properly with missing response properties 'scope' and
+    def test_fdm_openid_success_minimal(self, mocked_requests_get):
+        """Call the FDM Monster OpenID connection test properly with missing response properties 'scope' and
         'token_type' """
 
         m = mock.MagicMock()
         m.data = json.dumps({"url": "http://127.0.0.1", "client_id": "asd", "client_secret": "ok"})
-        with mock.patch("hub_connector.request", m):
+        with mock.patch("fdm_connector.request", m):
             self.assert_state(State.BOOT)
-            self.plugin.test_3dhub_openid()
+            self.plugin.test_fdmmonster_openid()
             self.assert_state(State.SUCCESS)
