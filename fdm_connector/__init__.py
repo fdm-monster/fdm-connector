@@ -153,7 +153,7 @@ class FdmConnectorPlugin(
                 displayVersion=self._plugin_version,
 
                 # version check: github repository
-                type="gitfdm_release",
+                type="github_release",
                 user="fdm-monster",
                 repo="fdm-connector",
                 current=self._plugin_version,
