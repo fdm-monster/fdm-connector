@@ -23,10 +23,10 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Test with pytest and pytest-cov
         run: |
-          pytest --cache-clear --verbose --cov=hub_connector
+          pytest --cache-clear --verbose --cov=fdm_connector
       - name: Build coverage file
         run: |
-          pytest --cache-clear --cov=hub_connector tests/ > pytest-coverage.txt
+          pytest --cache-clear --cov=fdm_connector tests/ > pytest-coverage.txt
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names

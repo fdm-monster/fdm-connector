@@ -1,4 +1,4 @@
 include README.md
-recursive-include hub_connector/templates *
-recursive-include hub_connector/translations *
-recursive-include hub_connector/static *
+recursive-include fdm_connector/templates *
+recursive-include fdm_connector/translations *
+recursive-include fdm_connector/static *

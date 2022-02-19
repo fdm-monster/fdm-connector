@@ -1,17 +1,17 @@
 /*
- * View model for 3D Hub Connector
+ * View model for FDM Connector
  *
  * Author: David Zwart
  * License: AGPLv3
  */
 $(function () {
-    function HubConnectorViewModel(parameters) {
+    function FdmConnectorViewModel(parameters) {
         const self = this;
 
         self.loginState = parameters[0];
         self.settings = parameters[1];
 
-        // this will hold the hub URL currently saved
+        // this will hold the Fdm URL currently saved
         // self.currentUrl = ko.observable();
         //
         //         // This will get called before the HelloWorldViewModel gets bound to the DOM, but after its
@@ -19,15 +19,15 @@ $(function () {
         // // gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
         // // the SettingsViewModel been properly populated.
         // self.onBeforeBinding = function() {
-        //     self.currentUrl(self.settings.settings.plugins.hub_connector.hub_host());
-        //     self.currentPort(self.settings.settings.plugins.hub_connector.hub_port());
+        //     self.currentUrl(self.settings.settings.plugins.fdm_connector.fdm_host());
+        //     self.currentPort(self.settings.settings.plugins.fdm_connector.fdm_port());
         //
         //     console.log(self.currentUrl(), self.currentPort())
         // }
 
         function getCurrentProposedUrl() {
-            const host = $("#settings-hub_connector-hub_host")[0];
-            const port = $("#settings-hub_connector-hub_port")[0];
+            const host = $("#settings-fdm_connector-fdm_host")[0];
+            const port = $("#settings-fdm_connector-fdm_port")[0];
 
             const proposedUrl = new URL(host.value);
             proposedUrl.port = port.value;
@@ -45,7 +45,7 @@ $(function () {
             };
         }
 
-        self.settings.open3DHub = function () {
+        self.settings.openfdmmonster = function () {
             const currentUrl = getCurrentProposedUrl();
 
             window.open(currentUrl, '_blank');
@@ -59,7 +59,7 @@ $(function () {
 
             const currentUrl = getCurrentProposedUrl();
 
-            var fullUrl = PLUGIN_BASEURL + "hub_connector/test_3dhub_connection";
+            var fullUrl = PLUGIN_BASEURL + "fdm_connector/test_fdmmonster_connection";
 
             loader.show();
             successBar.hide();
@@ -85,7 +85,7 @@ $(function () {
                             responseVersion[0].innerText = body.version;
                         }
                     } catch (e) {
-                        console.log("Error occurred while testing 3D Hub", e);
+                        console.log("Error occurred while testing FDM Monster", e);
                     } finally {
                         loader.hide();
                     }
@@ -101,7 +101,7 @@ $(function () {
 
             const currentUrl = getCurrentProposedUrl();
 
-            var fullUrl = PLUGIN_BASEURL + "hub_connector/test_3dhub_openid";
+            var fullUrl = PLUGIN_BASEURL + "fdm_connector/test_fdmmonster_openid";
 
             loader.show();
             successBar.hide();
@@ -133,7 +133,7 @@ $(function () {
                             responseState[0].innerText = body.state;
                         }
                     } catch (e) {
-                        console.log("Error occurred while testing 3D Hub", e);
+                        console.log("Error occurred while testing FDM Monster", e);
                     } finally {
                         loader.hide();
                     }
@@ -146,15 +146,15 @@ $(function () {
      * and a full list of the available options.
      */
     OCTOPRINT_VIEWMODELS.push([
-        HubConnectorViewModel,
+        FdmConnectorViewModel,
         // ViewModels your plugin depends on, e.g. loginStateViewModel, settingsViewModel, ...
         [
             "loginStateViewModel", "settingsViewModel"
         ],
-        // Elements to bind to, e.g. #settings_plugin_hub_connector, #tab_plugin_hub_connector, ...
+        // Elements to bind to, e.g. #settings_plugin_fdm_connector, #tab_plugin_fdm_connector, ...
         [
-            // "#settings_plugin_hub_connector",
-            // "#navbar_plugin_hub_connector"
+            // "#settings_plugin_fdm_connector",
+            // "#navbar_plugin_fdm_connector"
         ]
     ]);
 });

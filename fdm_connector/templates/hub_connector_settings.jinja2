@@ -1,23 +1,23 @@
-<h3>{{ _("3D Hub Connector") }}</h3>
+<h3>{{ _("FDM Connector") }}</h3>
 <form class="form-horizontal" onsubmit="return false;">
-    <div class="control-group" title="{{ _('3D Hub connection settings')|edq }}">
+    <div class="control-group" title="{{ _('FDM Monster connection settings')|edq }}">
         <label class="control-label"
-               for="settings-hub_connector-hub_host">{{ _('3D Hub connection') }}</label>
+               for="settings-fdm_connector-fdm_host">{{ _('FDM Monster connection') }}</label>
         <div class="controls">
             <input type="text" class="input-block-level"
-                   data-bind="value: settings.plugins.hub_connector.hub_host"
-                   id="settings-hub_connector-hub_host">
+                   data-bind="value: settings.plugins.fdm_connector.fdm_host"
+                   id="settings-fdm_connector-fdm_host">
             <span class="help-inline">
-                host (f.e. <code>http://192.168.1.101</code> or <code>https://farm1.3dhub.com/</code>)
+                host (f.e. <code>http://192.168.1.101</code> or <code>https://farm1.fdmmonster.com/</code>)
             </span>
         </div>
         <label class="control-label"
-               for="settings-hub_connector-hub_port">{{ _('3D Hub port') }}</label>
+               for="settings-fdm_connector-fdm_port">{{ _('FDM Monster port') }}</label>
         <div class="controls">
             <div class="input-append">
                 <input type="text" class="input-mini text-right"
-                       id="settings-hub_connector-hub_port"
-                       data-bind="value: settings.plugins.hub_connector.hub_port">
+                       id="settings-fdm_connector-fdm_port"
+                       data-bind="value: settings.plugins.fdm_connector.fdm_port">
             </div>
             <span class="help-inline">
                 port (default <code>80</code> for HTTP and <code>443</code> for HTTPS)
@@ -26,28 +26,28 @@
     </div>
 
     <div class="control-group"
-         title="{{ _('3D Hub connection test)') }}">
+         title="{{ _('FDM Monster connection test)') }}">
         <small>Always save changes with the Save button on the bottom.</small>
         <div class="controls">
             <span class="help-inline">
-                <div class="btn btn-info" data-bind="click: testUrlBackend">Test 3D Hub connection</div>
+                <div class="btn btn-info" data-bind="click: testUrlBackend">Test FDM Monster connection</div>
             </span>
-            <div class="btn btn-success" data-bind="click: open3DHub">Open 3D Hub</div>
+            <div class="btn btn-success" data-bind="click: openfdmmonster">Open FDM Monster</div>
         </div>
         <div>
             <div id="connection-loader" class="margin-top" style="display: none">
-                Loading 3D Hub version <i class="fas fa-spinner fa-spin"></i>
+                Loading FDM Monster version <i class="fas fa-spinner fa-spin"></i>
                 <div class="progress progress-striped active">
                     <div class="bar" style="width: 100%;"></div>
                 </div>
             </div>
             <div class="alert alert-success margin-top" id="connection-success" style="display: none">
                 <strong>Success</strong>
-                3D Hub responded with version: <span id="response-version">not provided</span>
+                FDM Monster responded with version: <span id="response-version">not provided</span>
             </div>
             <div class="alert alert-error margin-top" id="connection-failed" style="display: none">
                 <strong>Failure</strong>
-                Did not get an answer from this URL (host and port setting above). Is 3D Hub being served at this
+                Did not get an answer from this URL (host and port setting above). Is FDM Monster being served at this
                 address?
             </div>
         </div>
@@ -60,27 +60,27 @@
         <label class="control-label" for="settings-oidc-client-id">{{ _('OpenID client ID') }}</label>
         <div class="controls">
             <input type="text" class="input-block-level"
-                   data-bind="value: settings.plugins.hub_connector.oidc_client_id"
-                   id="settings-oidc-client-id" placeholder="OpenID client id from 3D Hub">
+                   data-bind="value: settings.plugins.fdm_connector.oidc_client_id"
+                   id="settings-oidc-client-id" placeholder="OpenID client id from FDM Monster">
             <span class="help-inline">
-                {% trans %}Note that the 'client_id' value needs to be configured in 3D Hub for this to
+                {% trans %}Note that the 'client_id' value needs to be configured in FDM Monster for this to
                     succeed.{% endtrans %}
             </span>
         </div>
         <label class="control-label" for="settings-oidc-client-secret">{{ _('OpenID client secret') }}</label>
         <div class="controls">
             <input type="password" class="input-block-level"
-                   data-bind="value: settings.plugins.hub_connector.oidc_client_secret"
-                   id="settings-oidc-client-secret" placeholder="My OpenID client secret from 3D Hub">
+                   data-bind="value: settings.plugins.fdm_connector.oidc_client_secret"
+                   id="settings-oidc-client-secret" placeholder="My OpenID client secret from FDM Monster">
             <span class="help-inline">
-                {% trans %}Note that the 'client_secret' value needs to be configured in 3D Hub first for this to
+                {% trans %}Note that the 'client_secret' value needs to be configured in FDM Monster first for this to
                     succeed.{% endtrans %}
             </span>
         </div>
     </div>
 
     <div class="control-group"
-         title="{{ _('3D Hub connection testing buttons)') }}">
+         title="{{ _('FDM Monster connection testing buttons)') }}">
         <small>Always save changes with the Save button on the bottom.</small>
         <em>Announcing manually is currently not yet finished. OctoPrint will do this automatically.</em>
         <div class="controls">
@@ -95,15 +95,15 @@
         </div>
         <div>
             <div id="credentials-loader" class="margin-top" style="display: none">
-                Checking 3D Hub OpenID Connect authentication <i class="fas fa-spinner fa-spin"></i>
+                Checking FDM Monster OpenID Connect authentication <i class="fas fa-spinner fa-spin"></i>
                 <div class="progress progress-striped active">
                     <div class="bar" style="width: 100%;"></div>
                 </div>
             </div>
             <div class="alert alert-success margin-top" id="credentials-success" style="display: none">
                 <strong>Success</strong>
-                3D Hub responded with state: <strong id="response-state">not provided</strong>
-                If this is 'success' this means 3D Hub Connector is able to keep 3D Hub informed.
+                FDM Monster responded with state: <strong id="response-state">not provided</strong>
+                If this is 'success' this means FDM Connector is able to keep FDM Monster informed.
             </div>
             <div class="alert alert-danger margin-top" id="credentials-bug" style="display: none">
                 <strong>Bug</strong>
@@ -111,7 +111,7 @@
             </div>
             <div class="alert alert-error margin-top" id="credentials-failed" style="display: none">
                 <strong>Failure</strong>
-                Did not get an answer from this URL (host and port setting above). Is 3D Hub being served at this
+                Did not get an answer from this URL (host and port setting above). Is FDM Monster being served at this
                 address?
             </div>
         </div>
@@ -120,24 +120,24 @@
     <h4>{{ _("FAQ, roadmap and bugs") }}</h4>
     <i>This plugin is currently able to:</i>
     <ol>
-        <li><span class="badge badge-success">new - v0.1.1-rc1</span> Announce OctoPrint to 3D Hub automatically and periodically- you still need to accept the connection and rectify certain settings like ip or API key.
+        <li><span class="badge badge-success">new - v0.1.1-rc1</span> Announce OctoPrint to FDM Monster automatically and periodically- you still need to accept the connection and rectify certain settings like ip or API key.
         </li>
     </ol>
 
     <i>This plugin's roadmap is chronologically:</i>
     <ol>
-        <li><span class="badge badge-warning">v0.1.1-rc2</span> Manually test announcing and present 3D Hub response </li>
+        <li><span class="badge badge-warning">v0.1.1-rc2</span> Manually test announcing and present FDM Monster response </li>
         <li><span class="badge badge-warning">v0.1.1-rc3</span> Expose advanced settings with 'ping' retry timer setting and the 'port_override' to make proxy situations easier </li>
         <li><span class="badge badge-warning">v0.1.1</span> Provide debug information and downloadable logs to make errors easier to recognize and fix</li>
-        <li><span class="badge badge-secondary">v0.1.2</span> Announcing OctoPrint to 3D Hub including generating an admin API key</li>
-        <li><span class="badge badge-secondary">v0.1.2</span> Pass system data like CPU temperature to 3D Hub for monitoring</li>
-        <li><span class="badge badge-secondary">v0.1.2+</span> Provide filament data to 3D Hub - making the Filament Manager plugin obsolete</li>
-        <li><span class="badge badge-secondary">v0.2.0</span>Tunneling to 3D Hub, making connections more stable and faster</li>
+        <li><span class="badge badge-secondary">v0.1.2</span> Announcing OctoPrint to FDM Monster including generating an admin API key</li>
+        <li><span class="badge badge-secondary">v0.1.2</span> Pass system data like CPU temperature to FDM Monster for monitoring</li>
+        <li><span class="badge badge-secondary">v0.1.2+</span> Provide filament data to FDM Monster - making the Filament Manager plugin obsolete</li>
+        <li><span class="badge badge-secondary">v0.2.0</span>Tunneling to FDM Monster, making connections more stable and faster</li>
     </ol>
 
     <i>Frequently asked questions:</i>
     <i class="help-inline">
-        {% trans %}I have a bug! What now? Please visit <a href="https://github.com/3d-hub/3d-hub-connector/issues">https://github.com/3d-hub/3d-hub-connector/issues</a> {% endtrans %}
+        {% trans %}I have a bug! What now? Please visit <a href="https://github.com/fdm-monster/fdm-connector/issues">https://github.com/fdm-monster/fdm-connector/issues</a> {% endtrans %}
     </i>
     <strong class="help-inline">
         {% trans %}This plugin is still in alpha stage. This means bugs are likely to occur.{% endtrans %}

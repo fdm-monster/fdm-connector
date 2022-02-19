@@ -1,6 +1,6 @@
 import unittest
 
-from hub_connector import __plugin_load__
+from fdm_connector import __plugin_load__
 
 
 class TestPlugin(unittest.TestCase):
