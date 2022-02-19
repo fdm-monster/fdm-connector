@@ -350,7 +350,7 @@ class FdmConnectorPlugin(
 
 
 __plugin_name__ = "FDM Connector"
-__plugin_version__ = "0.1.0"
+__plugin_version__ = "0.2.0"
 __plugin_description__ = "The FDM Monster plugin for OctoPrint"
 __plugin_pythoncompat__ = ">=3,<4"
 
