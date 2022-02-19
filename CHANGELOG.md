@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0]
+
+### Added
+
+### Changed
+    - Renamed to FDM Connector
+### Removed
+
+### Fixed
+
+
 ## [0.1.0-rc1-build3]
 
 ### Added

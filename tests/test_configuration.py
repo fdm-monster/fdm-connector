@@ -173,7 +173,7 @@ class TestPluginConfiguration(unittest.TestCase):
 
     def test_plugin_version_compared_setup(self):
         """ Make sure the installation version equals the plugin version """
-        assert __plugin_version__ == "0.1.0"
+        assert __plugin_version__ == "0.2.0"
 
     def assert_state(self, state):
         assert self.plugin._state is state
