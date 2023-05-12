@@ -1,3 +1,5 @@
+**Warning: This plugin is currently not in use, and it will not work with FDM Monster.**
+
 # FDM Connector
 
 The FDM Connector is an OctoPrint plugin that simplifies the initial connection to FDM Monster. The plugin is also expected to facilitate setting up a tunnel connection and tracking filament usage in future versions.
@@ -9,8 +11,8 @@ The FDM Connector is an OctoPrint plugin that simplifies the initial connection 
 ## Future features
 
 - Filament Pedometer - Send filament usage data to FDM Monster, cooperating with the plugin SpoolManager without external database (Filament Manager is not our aim).
-- Http Tunnel - Connect to FDM Monster to make connection to printers easy, especially over docker, VPN, DMZ, VLAN, the cloud or other complex network setups.
-- Single-sign-On - Client-to-machine (C2M) and machine-to-machine (M2M) authentication, removing the need for more than 1 set of credentials across the farm.
+- Http Tunnel - Connect to FDM Monster to make connection to printers easy, especially over docker, VPN, DMZ, VLAN, the cloud, or other complex network setups.
+- Single-Sign-On - Client-to-machine (C2M) and machine-to-machine (M2M) authentication, removing the need for more than 1 set of credentials across the farm.
 
 For more feature requests, bugs, or ideas, please visit the [FDM Connector Discussions page](https://github.com/fdm-monster/fdm-connector/discussions).
 
@@ -46,8 +48,8 @@ We understand if you restore OctoPrint backups to install new OctoPrints. For th
 Periodic updates
 - OPTIONAL `ping`: the time in seconds between each call to FDM Monster (default is 15 * 60, or 15 minutes)
 
-The plugin will use `server:host` and `server:port` to give FDM Monster a handle to connect back to this OctoPrint. This is often incorrect if your OctoPrint is behind a proxy, in a VM, UnRaid, a different device, DMZ, in a docker container, or in a VPN.
-At this moment, this needs to be rectified in FDM Monster. Later we will allow more advanced ways to fix this, but for now, we believe this plugin is going to make it much easier already.
+The `ping` setting specifies the frequency at which the plugin will send updates to FDM Monster. The default is every 15 minutes, but you can adjust this value if you prefer a different update frequency.
 
 ## Conclusion
-FDM Connector is an OctoPrint plugin that helps in setting up a tunnel connection and tracking filament usage. With its current features, such as auto-registration, it allows you to send your OctoPrint connection parameters to FDM Monster safely, making setting up printers a breeze. Additionally, it offers future features like the Filament Pedometer, Http Tunnel, and Single-sign-On for client-to-machine and machine-to-machine authentication, removing the need for more than one set of credentials across the farm. If you have any feature requests, bugs, or ideas, please head over to https://github.com/fdm-monster/fdm-connector/discussions.
+
+FDM Connector is an OctoPrint plugin that simplifies the initial connection to FDM Monster and offers future features such as filament usage tracking and tunnel connection setup. The plugin is currently in the alpha stage and requires the plugin system on FDM Monster, which is not yet released. If you have any feature requests, bugs, or ideas, please visit the [FDM Connector Discussions page](https://github.com/fdm-monster/fdm-connector/discussions).
